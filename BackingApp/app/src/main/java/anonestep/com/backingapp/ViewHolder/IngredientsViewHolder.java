@@ -18,6 +18,8 @@ public class IngredientsViewHolder extends RecyclerView.ViewHolder {
     public TextView ingredientsName;
     @BindView(R.id.ingredients_quantity)
     public TextView ingredientsQuantity;
+    @BindView(R.id.ingredient_count)
+    public TextView ingredientCount;
 
     public IngredientsViewHolder(View itemView) {
         super(itemView);

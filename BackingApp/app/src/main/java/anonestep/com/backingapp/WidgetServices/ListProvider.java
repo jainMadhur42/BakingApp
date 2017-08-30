@@ -52,7 +52,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
             ingredients.setQuantity(ingredientCursor.getFloat(ingredientCursor.
                     getColumnIndex(DbContract.Ingredients.Ingredients_quantity)));
             ingredientsList.add(ingredients);
-        }
+        }if(ingredientCursor!=null)
         ingredientCursor.close();
     }
 

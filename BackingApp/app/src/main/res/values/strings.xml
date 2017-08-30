@@ -2,9 +2,12 @@
     <string name="app_name">Baking Time</string>
     <string name="no_internet">No internet</string>
     <string name="steps">Steps</string>
+    <string name="recipe">Recipe</string>
     <string name="ingredients_string">Ingredients</string>
     <string name="add_to_widget">Add to Widget</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="add_to_favorite">Add to Favorite</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 </resources>

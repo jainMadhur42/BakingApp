@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import anonestep.com.backingapp.Listener.StepsClickListener;
@@ -18,11 +19,11 @@ import anonestep.com.backingapp.ViewHolder.StepsViewHolder;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
 
-    List<Steps> stepList;
+    ArrayList<Steps> stepList;
     StepsClickListener stepsClickListener;
 
     public StepsAdapter(List<Steps> stepsList, StepsClickListener stepsClickListener) {
-        this.stepList = stepsList;
+        this.stepList = (ArrayList)stepsList;
         this.stepsClickListener = stepsClickListener;
     }
 
@@ -40,7 +41,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stepsClickListener.stepClickListener(stepList.get(position));
+                stepsClickListener.stepClickListener(stepList,position);
             }
         });
     }

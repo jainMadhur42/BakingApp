@@ -1,5 +1,8 @@
 package anonestep.com.backingapp.Listener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import anonestep.com.backingapp.Model.Steps;
 
 /**
@@ -7,5 +10,5 @@ import anonestep.com.backingapp.Model.Steps;
  */
 
 public interface StepsClickListener {
-    void stepClickListener(Steps steps);
+    void stepClickListener(ArrayList<Steps> steps, int position);
 }

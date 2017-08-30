@@ -43,7 +43,10 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
     Toolbar toolbar;
     @BindView(R.id.add_to_widget)
     FloatingActionButton mAddToWidget;
-    List<Ingredients> ingredientsList;
+    private static final String INGREDIENT_LIST = "INGREDIENT_LIST";
+    ArrayList<Ingredients> ingredientsList;
+    private static final String STEP_LIST = "STEP_LIST";
+    ArrayList<Steps> stepList;
     Recipe recipe;
 
     @Override
@@ -51,9 +54,9 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
         ButterKnife.bind(this);
-        recipe = getIntent().getParcelableExtra("RECIPE");
-        ingredientsList = recipe.getIngredients();
-        List<Steps> stepList = recipe.getSteps();
+        recipe = getIntent().getParcelableExtra(getString(R.string.recipe));
+        ingredientsList = (ArrayList) recipe.getIngredients();
+        stepList = (ArrayList) recipe.getSteps();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recipe.getName());
@@ -68,16 +71,29 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
         stepsRecyclerView.setAdapter(stepsAdapter);
 
         IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(ingredientsList);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getBaseContext(),
-                DividerItemDecoration.VERTICAL);
-        ingredientsRecyclerView.addItemDecoration(itemDecoration);
 
-        ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.HORIZONTAL, false));
         ingredientsRecyclerView.setAdapter(ingredientsAdapter);
         Toast.makeText(getBaseContext(), ingredientsList.size() + " ", Toast.LENGTH_LONG).show();
-
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEP_LIST, stepList);
+        outState.putParcelableArrayList(INGREDIENT_LIST, ingredientsList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            stepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            ingredientsList = savedInstanceState.getParcelableArrayList(INGREDIENT_LIST);
+        }
+
+    }
 
     @OnClick(R.id.add_to_widget)
     public void addToWidget() {
@@ -96,7 +112,7 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
                 uri = getContentResolver().insert(DbContract.Ingredients.CONTENT_URI,
                         contentValues);
                 if (uri != null) {
-
+                    Toast.makeText(getBaseContext(), "Widget has been Successfully Added", Toast.LENGTH_LONG).show();
                 }
             }
             AppWidgetManager appWidgetManager =
@@ -104,18 +120,19 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName
                     (getBaseContext(),
                             RecipeWidget.class));
-            int i=0;
-            for (int appWidgetId : appWidgetIds){
-                RecipeWidget.updateAppWidget(getBaseContext(), appWidgetManager, appWidgetId,i);
+            int i = 0;
+            for (int appWidgetId : appWidgetIds) {
+                RecipeWidget.updateAppWidget(getBaseContext(), appWidgetManager, appWidgetId, i);
                 i++;
-        }
+            }
         }
     }
 
     @Override
-    public void stepClickListener(Steps step) {
+    public void stepClickListener(ArrayList<Steps> step, int position) {
         Intent intent = new Intent(getBaseContext(), StepsDetail.class);
-        intent.putExtra("STEPS", step);
+        intent.putParcelableArrayListExtra(getString(R.string.steps), step);
+        intent.putExtra("POSITION", position);
         startActivity(intent);
     }
 }

@@ -25,13 +25,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsViewHold
 
     @Override
     public IngredientsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredents_layout, parent,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredents_card, parent,
                 false);
         return new IngredientsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(IngredientsViewHolder holder, int position) {
+        holder.ingredientCount.setText("Ingredient " + (position + 1));
         holder.ingredientsName.setText(ingredientsList.get(position).getIngredient());
         holder.ingredientsQuantity.setText(ingredientsList.get(position).getQuantity() + " " +
                 "" + ingredientsList.get(position).getMeasure());

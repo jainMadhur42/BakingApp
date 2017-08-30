@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:nestedScrollingEnabled="true"
@@ -17,28 +16,30 @@
             style="@style/Base.TextAppearance.AppCompat.SearchResult.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/default_padding"
+            android:paddingLeft="@dimen/default_padding"
+            android:paddingTop="@dimen/default_padding"
             android:text="@string/ingredients_string"
-            android:textColor="@color/primary_text"/>
+            android:textColor="@color/primary_text" />
 
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ingredients_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.SearchResult.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/default_padding"
+            android:paddingLeft="@dimen/default_padding"
+            android:paddingTop="@dimen/default_padding"
             android:text="@string/steps"
-            android:textColor="@color/primary_text"/>
+            android:textColor="@color/primary_text" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/steps_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </ScrollView>

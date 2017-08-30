@@ -24,15 +24,15 @@
     </android.support.v7.widget.ActionBarContainer>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="?actionBarSize">
 
         <include layout="@layout/content_recipe_detail"/>
+
+
     </ScrollView>
-
-
-
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/add_to_widget"
