@@ -12,9 +12,9 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@color/colorPrimary"
-        android:contentDescription="@string/appwidget_text"
+        android:contentDescription="@string/app_name"
         android:padding="@dimen/default_padding"
-        android:text="@string/appwidget_text"
+        android:text="@string/app_name"
         android:textColor="#ffffff"
         android:textSize="@dimen/primary_text_size"
         android:textStyle="bold"/>
