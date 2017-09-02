@@ -13,12 +13,15 @@ public class Steps implements Parcelable{
     private String shortDescription;
     private String description;
     private String videoURL;
+    private String thumbnailURL;
+
 
     protected Steps(Parcel in) {
         id = in.readInt();
         shortDescription = in.readString();
         description = in.readString();
         videoURL = in.readString();
+        thumbnailURL=in.readString();
     }
 
     public static final Creator<Steps> CREATOR = new Creator<Steps>() {
@@ -70,11 +73,20 @@ public class Steps implements Parcelable{
         return 0;
     }
 
+    public String getThumbnailURL() {
+        return thumbnailURL;
+    }
+
+    public void setThumbnailURL(String thumbnailURL) {
+        this.thumbnailURL = thumbnailURL;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(shortDescription);
         dest.writeString(description);
         dest.writeString(videoURL);
+        dest.writeString(thumbnailURL);
     }
 }

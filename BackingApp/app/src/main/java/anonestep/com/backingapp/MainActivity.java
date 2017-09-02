@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        final RecipeAdapter recipeAdapter = new RecipeAdapter(null, this);
+        final RecipeAdapter recipeAdapter = new RecipeAdapter(getBaseContext(),null, this);
 
         int grid_count = getResources().getInteger(R.integer.grid_column_count);
 

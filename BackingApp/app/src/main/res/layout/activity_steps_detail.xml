@@ -23,7 +23,10 @@
     </android.support.v7.widget.ActionBarContainer>
 
 
-    <include layout="@layout/content_step_detail"/>
+    <FrameLayout
+        android:id="@+id/step_detail_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>

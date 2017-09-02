@@ -25,6 +25,7 @@ import java.util.List;
 import anonestep.com.backingapp.Adapters.IngredientsAdapter;
 import anonestep.com.backingapp.Adapters.StepsAdapter;
 import anonestep.com.backingapp.DbHelper.DbContract;
+import anonestep.com.backingapp.Fragments.RecipeDetailFragment;
 import anonestep.com.backingapp.Listener.StepsClickListener;
 import anonestep.com.backingapp.Model.Ingredients;
 import anonestep.com.backingapp.Model.Recipe;
@@ -33,12 +34,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RecipeDetail extends AppCompatActivity implements StepsClickListener {
+public class RecipeDetail extends AppCompatActivity  {
 
-    @BindView(R.id.ingredients_recycler_view)
-    RecyclerView ingredientsRecyclerView;
-    @BindView((R.id.steps_recycler_view))
-    RecyclerView stepsRecyclerView;
     @BindView(R.id.toolBar)
     Toolbar toolbar;
     @BindView(R.id.add_to_widget)
@@ -62,23 +59,15 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
         getSupportActionBar().setTitle(recipe.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.recipe_detail_container,RecipeDetailFragment.newInstance(recipe))
+                .commit();
 
-        StepsAdapter stepsAdapter = new StepsAdapter(stepList, this);
-
-
-        stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext(),
-                LinearLayoutManager.HORIZONTAL, false));
-        stepsRecyclerView.setAdapter(stepsAdapter);
-
-        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(ingredientsList);
-
-        ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.HORIZONTAL, false));
-        ingredientsRecyclerView.setAdapter(ingredientsAdapter);
-        Toast.makeText(getBaseContext(), ingredientsList.size() + " ", Toast.LENGTH_LONG).show();
     }
 
 
-    @Override
+/*    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STEP_LIST, stepList);
@@ -93,7 +82,7 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
             ingredientsList = savedInstanceState.getParcelableArrayList(INGREDIENT_LIST);
         }
 
-    }
+    }*/
 
     @OnClick(R.id.add_to_widget)
     public void addToWidget() {
@@ -128,11 +117,5 @@ public class RecipeDetail extends AppCompatActivity implements StepsClickListene
         }
     }
 
-    @Override
-    public void stepClickListener(ArrayList<Steps> step, int position) {
-        Intent intent = new Intent(getBaseContext(), StepsDetail.class);
-        intent.putParcelableArrayListExtra(getString(R.string.steps), step);
-        intent.putExtra("POSITION", position);
-        startActivity(intent);
-    }
+
 }

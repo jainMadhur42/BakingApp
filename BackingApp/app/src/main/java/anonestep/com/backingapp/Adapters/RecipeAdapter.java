@@ -1,9 +1,12 @@
 package anonestep.com.backingapp.Adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -20,12 +23,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
     private ArrayList<Recipe> recipeArrayList;
     private RecipeClickListener recipeClickListener;
-    int[] imageArray = {R.drawable.nutella_pie, R.drawable.brownies, R.drawable.yellow_cake, R
-            .drawable.cheese_cake};
+    private Context context;
 
-    public RecipeAdapter(ArrayList<Recipe> recipeArrayList, RecipeClickListener recipeClickListener) {
+    public RecipeAdapter(Context context, ArrayList<Recipe> recipeArrayList, RecipeClickListener recipeClickListener) {
         this.recipeArrayList = recipeArrayList;
         this.recipeClickListener = recipeClickListener;
+        this.context = context;
     }
 
     @Override
@@ -38,7 +41,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, final int position) {
         holder.mRecipeName.setText(recipeArrayList.get(position).getName());
-        holder.recipeImage.setImageResource(imageArray[position]);
+        String imagePath = recipeArrayList.get(position).getImage();
+        if (imagePath.equals(""))
+            Picasso.with(context).load(R.drawable.cheese_cake).into(holder.recipeImage);
+        else
+            Picasso.with(context).load(imagePath).into(holder.recipeImage);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
