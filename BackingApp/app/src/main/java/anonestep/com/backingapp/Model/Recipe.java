@@ -2,6 +2,7 @@ package anonestep.com.backingapp.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.List;
 
@@ -15,11 +16,15 @@ public class Recipe implements Parcelable {
     private List<Ingredients> ingredients;
     private List<Steps> steps;
     private String image;
+    private String TAG = Recipe.class.getSimpleName();
+
+    public Recipe() {
+    }
 
     protected Recipe(Parcel in) {
         id = in.readInt();
-        image = in.readString();
         name = in.readString();
+        image = in.readString();
         ingredients = in.createTypedArrayList(Ingredients.CREATOR);
         steps = in.createTypedArrayList(Steps.CREATOR);
     }

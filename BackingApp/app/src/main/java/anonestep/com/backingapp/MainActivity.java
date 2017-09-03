@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
     ProgressBar mProgressBar;
     RecyclerView recipeRecycler;
     ArrayList<Recipe> recipeArrayList;
+    RecipeAdapter recipeAdapter;
 
 
     @Override
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        final RecipeAdapter recipeAdapter = new RecipeAdapter(getBaseContext(),null, this);
+        recipeAdapter = new RecipeAdapter(getBaseContext(), null, this);
 
         int grid_count = getResources().getInteger(R.integer.grid_column_count);
 
@@ -83,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
                     Log.d(TAG, error.toString());
                 }
             });
-
             requestQueue.add(jsonArrayRequest);
         } else {
             mNoInternetText.setVisibility(View.VISIBLE);
@@ -116,7 +116,9 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
     @Override
     public void onClick(Recipe recipe) {
         Intent intent = new Intent(getBaseContext(), RecipeDetail.class);
-        intent.putExtra(getString(R.string.recipe), recipe);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.recipe), recipe);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

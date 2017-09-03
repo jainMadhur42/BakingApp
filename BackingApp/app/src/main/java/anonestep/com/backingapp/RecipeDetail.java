@@ -34,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RecipeDetail extends AppCompatActivity  {
+public class RecipeDetail extends AppCompatActivity {
 
     @BindView(R.id.toolBar)
     Toolbar toolbar;
@@ -44,6 +44,7 @@ public class RecipeDetail extends AppCompatActivity  {
     ArrayList<Ingredients> ingredientsList;
     private static final String STEP_LIST = "STEP_LIST";
     ArrayList<Steps> stepList;
+    private static final String TAG = RecipeDetail.class.getSimpleName();
     Recipe recipe;
 
     @Override
@@ -51,7 +52,11 @@ public class RecipeDetail extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
         ButterKnife.bind(this);
-        recipe = getIntent().getParcelableExtra(getString(R.string.recipe));
+        Bundle bundle = getIntent().getExtras();
+        recipe = bundle.getParcelable(getString(R.string.recipe));
+        /*Not getting Data */
+        Log.d("TAG", recipe.getName());
+
         ingredientsList = (ArrayList) recipe.getIngredients();
         stepList = (ArrayList) recipe.getSteps();
 
@@ -61,7 +66,7 @@ public class RecipeDetail extends AppCompatActivity  {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.recipe_detail_container,RecipeDetailFragment.newInstance(recipe))
+                .add(R.id.recipe_detail_container, RecipeDetailFragment.newInstance(recipe))
                 .commit();
 
     }
