@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
                     recipeArrayList = new Gson().fromJson(response.toString(), listType);
                     mProgressBar.setVisibility(View.INVISIBLE);
                     recipeAdapter.swapRecipeList(recipeArrayList);
+                    recipeRecycler.smoothScrollToPosition(currentScrollPosition);
                 }
             }, new Response.ErrorListener() {
                 @Override
