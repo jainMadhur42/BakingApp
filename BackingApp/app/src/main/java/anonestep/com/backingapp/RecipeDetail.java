@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,6 +27,7 @@ import anonestep.com.backingapp.Adapters.IngredientsAdapter;
 import anonestep.com.backingapp.Adapters.StepsAdapter;
 import anonestep.com.backingapp.DbHelper.DbContract;
 import anonestep.com.backingapp.Fragments.RecipeDetailFragment;
+import anonestep.com.backingapp.Fragments.RecipeDetailFragmentTablet;
 import anonestep.com.backingapp.Listener.StepsClickListener;
 import anonestep.com.backingapp.Model.Ingredients;
 import anonestep.com.backingapp.Model.Recipe;
@@ -40,54 +42,55 @@ public class RecipeDetail extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.add_to_widget)
     FloatingActionButton mAddToWidget;
-    private static final String INGREDIENT_LIST = "INGREDIENT_LIST";
     ArrayList<Ingredients> ingredientsList;
-    private static final String STEP_LIST = "STEP_LIST";
     ArrayList<Steps> stepList;
     private static final String TAG = RecipeDetail.class.getSimpleName();
     Recipe recipe;
+    Fragment mContent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
         ButterKnife.bind(this);
-        Bundle bundle = getIntent().getExtras();
-        recipe = bundle.getParcelable(getString(R.string.recipe));
+        if (savedInstanceState != null) {
+            recipe = savedInstanceState.getParcelable(getString(R.string.recipe));
+            mContent = getSupportFragmentManager().getFragment(savedInstanceState, TAG);
+        } else {
+            Bundle bundle = getIntent().getExtras();
+            recipe = bundle.getParcelable(getString(R.string.recipe));
+        }
         /*Not getting Data */
-        Log.d("TAG", recipe.getName());
 
         ingredientsList = (ArrayList) recipe.getIngredients();
         stepList = (ArrayList) recipe.getSteps();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recipe.getName());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.recipe_detail_container, RecipeDetailFragment.newInstance(recipe))
-                .commit();
-
+        if (getResources().getBoolean(R.bool.tablet) == false) {
+            mContent = RecipeDetailFragment.newInstance(recipe);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.recipe_detail_container, mContent, TAG)
+                    .commit();
+        } else {
+            mContent = RecipeDetailFragmentTablet.newInstance(recipe);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.recipe_detail_container, mContent, TAG)
+                    .commit();
+        }
     }
 
-
-/*    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STEP_LIST, stepList);
-        outState.putParcelableArrayList(INGREDIENT_LIST, ingredientsList);
-    }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) {
-            stepList = savedInstanceState.getParcelableArrayList(STEP_LIST);
-            ingredientsList = savedInstanceState.getParcelableArrayList(INGREDIENT_LIST);
-        }
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(getString(R.string.recipe), recipe);
+        getSupportFragmentManager().putFragment(outState, TAG, mContent);
+    }
 
-    }*/
 
     @OnClick(R.id.add_to_widget)
     public void addToWidget() {

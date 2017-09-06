@@ -33,10 +33,12 @@ import butterknife.OnClick;
 public class StepsDetail extends AppCompatActivity {
 
     @BindView(R.id.toolBar)
-     Toolbar toolbar;
+    Toolbar toolbar;
     private ArrayList<Steps> stepsArrayList;
     private int position;
-    SimpleExoPlayer exoPlayer;
+    private static String STEP_LIST = "STEP_LIST";
+    private static String POSITION = "POSITION";
+    private static final String TAG = StepDetailFragment.class.getSimpleName();
 
 
     @Override
@@ -44,41 +46,30 @@ public class StepsDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_detail);
         ButterKnife.bind(this);
+        if (savedInstanceState != null) {
+            stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_LIST);
+            position = savedInstanceState.getInt(POSITION, 0);
+            Log.d(TAG, "Details");
+        } else {
+            stepsArrayList = getIntent().getParcelableArrayListExtra(getString(R.string.steps));
+            position = getIntent().getIntExtra("POSITION", 0);
+        }
 
-
-        stepsArrayList = getIntent().getParcelableArrayListExtra(getString(R.string.steps));
-        position = getIntent().getIntExtra("POSITION", 0);
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.step_detail_fragment, StepDetailFragment.newInstance(stepsArrayList,position))
-                .commit();
+                .replace(R.id.step_detail_fragment, StepDetailFragment.newInstance(stepsArrayList, position)).commit();
 
-  /*      initializePlayer(stepsArrayList.get(position));*/
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Step ");
+
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //if (exoPlayer != null)
-            //releasePlayer();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEP_LIST, stepsArrayList);
+        outState.putInt(POSITION, StepDetailFragment.position);
     }
 
 
-
-
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //releasePlayer();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //releasePlayer();
-    }
 }

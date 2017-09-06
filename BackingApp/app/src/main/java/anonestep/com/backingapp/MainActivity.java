@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
             ".net/topher/2017/May/59121517_baking/baking.json";
     private String TAG = MainActivity.class.getSimpleName();
     private static final String RECIPE_LIST = "RECIPE_LIST";
+    private static final String CURRENT_SCROLL_POSITION = "CURRENT_SCROLL_POSITION";
+    private int currentScrollPosition = 0;
+    private GridLayoutManager layoutManager;
     @BindView(R.id.no_internet_text)
     TextView mNoInternetText;
     @BindView(R.id.progress_bar)
@@ -53,14 +56,19 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "Create");
         ButterKnife.bind(this);
-        recipeAdapter = new RecipeAdapter(getBaseContext(), null, this);
+        if (savedInstanceState != null) {
+            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
+            recipeArrayList = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
+        }
+        recipeAdapter = new RecipeAdapter(getBaseContext(), recipeArrayList, this);
 
         int grid_count = getResources().getInteger(R.integer.grid_column_count);
 
         recipeRecycler = (RecyclerView) findViewById(R.id.recipe_list);
-
-        recipeRecycler.setLayoutManager(new GridLayoutManager(getBaseContext(), grid_count));
+        layoutManager = new GridLayoutManager(getBaseContext(), grid_count);
+        recipeRecycler.setLayoutManager(layoutManager);
 
         recipeRecycler.setAdapter(recipeAdapter);
 
@@ -73,8 +81,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
                 public void onResponse(JSONArray response) {
                     Type listType = new TypeToken<List<Recipe>>() {
                     }.getType();
-                    recipeArrayList = new Gson().fromJson(response.toString(),
-                            listType);
+                    recipeArrayList = new Gson().fromJson(response.toString(), listType);
                     mProgressBar.setVisibility(View.INVISIBLE);
                     recipeAdapter.swapRecipeList(recipeArrayList);
                 }
@@ -94,17 +101,10 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "SAVE STATE");
+        outState.putInt(CURRENT_SCROLL_POSITION, layoutManager.findFirstVisibleItemPosition());
         outState.putParcelableArrayList(RECIPE_LIST, recipeArrayList);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Log.d(TAG, "RESTORE");
-        if (savedInstanceState != null)
-            recipeArrayList = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
-    }
 
     public boolean isOnline() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService

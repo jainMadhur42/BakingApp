@@ -1,6 +1,5 @@
 package anonestep.com.backingapp.Fragments;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import java.util.ArrayList;
 
-import anonestep.com.backingapp.Interface.OnCloseButtonClickListener;
+import anonestep.com.backingapp.Listener.NavigationBarClickListener;
 import anonestep.com.backingapp.Model.Steps;
 import anonestep.com.backingapp.R;
 import butterknife.BindView;
@@ -33,7 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class StepDetailFragment extends Fragment implements OnCloseButtonClickListener {
+public class StepDetailFragment extends Fragment {
 
 
     @BindView(R.id.step_description)
@@ -45,11 +44,12 @@ public class StepDetailFragment extends Fragment implements OnCloseButtonClickLi
     @BindView(R.id.next)
     Button next;
     private ArrayList<Steps> stepsArrayList;
-    private int position;
+    public static int position;
     SimpleExoPlayer exoPlayer;
     private static final String STEP_LIST = "STEP_LIST";
     private static final String POSITION = "POSITION";
-
+    private static final String TAG = StepDetailFragment.class.getSimpleName();
+    private NavigationBarClickListener mNavigationBarClickListener;
 
     public StepDetailFragment() {
         // Required empty public constructor
@@ -64,12 +64,18 @@ public class StepDetailFragment extends Fragment implements OnCloseButtonClickLi
         return fragment;
     }
 
+
+    public void setNavigationBarClickListener(NavigationBarClickListener mNavigationBarClickListener) {
+        this.mNavigationBarClickListener = mNavigationBarClickListener;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             stepsArrayList = getArguments().getParcelableArrayList(STEP_LIST);
             position = getArguments().getInt(POSITION);
+
         }
     }
 
@@ -78,6 +84,7 @@ public class StepDetailFragment extends Fragment implements OnCloseButtonClickLi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
+        Log.d(TAG, "CreateView");
         ButterKnife.bind(this, view);
         initializePlayer(stepsArrayList.get(position));
         return view;
@@ -89,7 +96,8 @@ public class StepDetailFragment extends Fragment implements OnCloseButtonClickLi
             position = stepsArrayList.size() - 1;
         } else
             position--;
-        releasePlayer();
+        if (mNavigationBarClickListener != null)
+            mNavigationBarClickListener.setClickedVideoPosition(position);
         initializePlayer(stepsArrayList.get(position));
     }
 
@@ -99,6 +107,8 @@ public class StepDetailFragment extends Fragment implements OnCloseButtonClickLi
             position++;
         else
             position = 0;
+        if (mNavigationBarClickListener != null)
+            mNavigationBarClickListener.setClickedVideoPosition(position);
         releasePlayer();
         initializePlayer(stepsArrayList.get(position));
     }
@@ -156,8 +166,4 @@ public class StepDetailFragment extends Fragment implements OnCloseButtonClickLi
         releasePlayer();
     }
 
-    @Override
-    public void onCLoseButtonCLicked() {
-        releasePlayer();
-    }
 }
