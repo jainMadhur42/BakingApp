@@ -61,7 +61,7 @@ public class StepsDetail extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Step ");
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

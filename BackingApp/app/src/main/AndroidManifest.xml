@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="anonestep.com.backingapp">
+    package="anonestep.com.backingapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,39 +16,39 @@
             android:name=".MainActivity"
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".RecipeDetail"
+            android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/MyTheme">
-        </activity>
+            android:theme="@style/MyTheme"></activity>
         <activity
             android:name=".StepsDetail"
-            android:theme="@style/MyTheme">
-        </activity>
+            android:parentActivityName=".RecipeDetail"
+            android:theme="@style/MyTheme"></activity>
 
         <receiver android:name=".RecipeWidget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/new_app_widget_info"/>
+                android:resource="@xml/new_app_widget_info" />
         </receiver>
 
         <service
             android:name=".WidgetServices.WidgetServices"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <provider
             android:name="anonestep.com.backingapp.DbHelper.DbContentProvider"
             android:authorities="anonestep.com.backingapp"
-            android:exported="false"/>
+            android:exported="false" />
 
     </application>
 

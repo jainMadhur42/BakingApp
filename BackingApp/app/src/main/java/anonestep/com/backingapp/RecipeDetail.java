@@ -68,6 +68,7 @@ public class RecipeDetail extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recipe.getName());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (getResources().getBoolean(R.bool.tablet) == false) {
             mContent = RecipeDetailFragment.newInstance(recipe);
             getSupportFragmentManager()

@@ -58,10 +58,7 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
         setContentView(R.layout.activity_main);
         Log.d(TAG, "Create");
         ButterKnife.bind(this);
-        if (savedInstanceState != null) {
-            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
-            recipeArrayList = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
-        }
+
         recipeAdapter = new RecipeAdapter(getBaseContext(), recipeArrayList, this);
 
         int grid_count = getResources().getInteger(R.integer.grid_column_count);
@@ -69,12 +66,10 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
         recipeRecycler = (RecyclerView) findViewById(R.id.recipe_list);
         layoutManager = new GridLayoutManager(getBaseContext(), grid_count);
         recipeRecycler.setLayoutManager(layoutManager);
-
         recipeRecycler.setAdapter(recipeAdapter);
 
         if (isOnline()) {
-            final RequestQueue requestQueue
-                    = Volley.newRequestQueue(getBaseContext());
+            final RequestQueue requestQueue = Volley.newRequestQueue(getBaseContext());
             mProgressBar.setVisibility(View.VISIBLE);
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
                 @Override

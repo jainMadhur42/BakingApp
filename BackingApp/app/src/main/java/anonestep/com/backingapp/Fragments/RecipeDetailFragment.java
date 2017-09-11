@@ -34,9 +34,9 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
     @BindView(R.id.close_step_detail)
     ImageView mCloseStepDetail;
     private static final String CURRENT_STEP_POSITION = "CURRENT_STEP_POSITION";
-    private static int currentStepPosition = 0;
+    private static int currentStepPosition;
     private static final String CURRENT_INGREDIENT_POSITION = "CURRENT_RECIPE_POSITION";
-    private int currentIngredientsPosition = 0;
+    private int currentIngredientsPosition;
     private LinearLayoutManager stepsLayoutManager, ingredientsLayoutManager;
     static ArrayList<Ingredients> ingredientsList;
     static ArrayList<Steps> stepList;
