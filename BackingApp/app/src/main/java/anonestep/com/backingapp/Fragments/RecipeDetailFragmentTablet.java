@@ -68,7 +68,6 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
             currentStepPosition = savedInstanceState.getInt(CURRENT_STEP_POSITION);
             position = savedInstanceState.getInt(CURRENT_VIDEO_POSITION);
             isVideoVisible = savedInstanceState.getBoolean(VIDEO_VISIBLE);
-            Log.d(TAG, isVideoVisible + " ");
             if (isVideoVisible == true)
                 getFragmentManager()
                         .beginTransaction()

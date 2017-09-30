@@ -1,7 +1,9 @@
 package anonestep.com.backingapp.Fragments;
 
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +50,9 @@ public class StepDetailFragment extends Fragment {
     SimpleExoPlayer exoPlayer;
     private static final String STEP_LIST = "STEP_LIST";
     private static final String POSITION = "POSITION";
+    private static final String CURRENT_POSITION = "CURRENT_POSITION";
+    public long current_position;
+    String url;
     private static final String TAG = StepDetailFragment.class.getSimpleName();
     private NavigationBarClickListener mNavigationBarClickListener;
 
@@ -70,23 +75,35 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            current_position = savedInstanceState.getLong(CURRENT_POSITION);
+            Log.d(TAG, current_position + "onActivity");
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             stepsArrayList = getArguments().getParcelableArrayList(STEP_LIST);
             position = getArguments().getInt(POSITION);
-
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            current_position = savedInstanceState.getLong(CURRENT_POSITION);
+            Log.d(TAG, current_position + "oNCreateView");
+        }
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
-        Log.d(TAG, "CreateView");
         ButterKnife.bind(this, view);
-        initializePlayer(stepsArrayList.get(position));
+        initializePlayer(stepsArrayList.get(position), current_position);
         return view;
     }
 
@@ -98,7 +115,9 @@ public class StepDetailFragment extends Fragment {
             position--;
         if (mNavigationBarClickListener != null)
             mNavigationBarClickListener.setClickedVideoPosition(position);
-        initializePlayer(stepsArrayList.get(position));
+        releasePlayer();
+        current_position = 0;
+        initializePlayer(stepsArrayList.get(position), current_position);
     }
 
     @OnClick(R.id.next)
@@ -109,12 +128,15 @@ public class StepDetailFragment extends Fragment {
             position = 0;
         if (mNavigationBarClickListener != null)
             mNavigationBarClickListener.setClickedVideoPosition(position);
+        current_position = 0;
         releasePlayer();
-        initializePlayer(stepsArrayList.get(position));
+        initializePlayer(stepsArrayList.get(position), current_position);
     }
 
-    private void initializePlayer(Steps steps) {
-        String url = steps.getVideoURL();
+    private void initializePlayer(Steps steps, long current_position) {
+        url = steps.getVideoURL();
+        
+        Log.d(TAG, "initializePlayer" + current_position);
         if (url != null) {
             mStepDescription.setText(steps.getDescription());
             exoPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()), new DefaultTrackSelector(), new DefaultLoadControl());
@@ -122,6 +144,7 @@ public class StepDetailFragment extends Fragment {
             exoPlayer.setPlayWhenReady(true);
             Uri uri = Uri.parse(url);
             MediaSource mediaSource = buildMediaSource(uri);
+            exoPlayer.seekTo(current_position);
             exoPlayer.prepare(mediaSource);
         } else {
             Toast.makeText(getContext(), "No Video Found", Toast.LENGTH_SHORT).show();
@@ -145,12 +168,10 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+        if (exoPlayer != null) {
+            current_position = exoPlayer.getCurrentPosition();
+            Log.d(TAG, current_position + " OnPause");
+        }
         releasePlayer();
     }
 
@@ -161,9 +182,32 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        releasePlayer();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         releasePlayer();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (exoPlayer != null) {
+            current_position = exoPlayer.getCurrentPosition();
+            Log.d(TAG, current_position + " OnResume");
+        }
+        //initializePlayer(stepsArrayList.get(position));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putLong(CURRENT_POSITION, current_position);
+        Log.d(TAG, current_position + "ON_SAVED_STATE");
     }
 
 }

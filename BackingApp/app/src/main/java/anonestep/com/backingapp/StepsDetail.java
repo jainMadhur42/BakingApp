@@ -1,6 +1,7 @@
 package anonestep.com.backingapp;
 
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +40,7 @@ public class StepsDetail extends AppCompatActivity {
     private static String STEP_LIST = "STEP_LIST";
     private static String POSITION = "POSITION";
     private static final String TAG = StepDetailFragment.class.getSimpleName();
-
+    Fragment mContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +50,15 @@ public class StepsDetail extends AppCompatActivity {
         if (savedInstanceState != null) {
             stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_LIST);
             position = savedInstanceState.getInt(POSITION, 0);
-            Log.d(TAG, "Details");
+            mContent = getSupportFragmentManager().getFragment(savedInstanceState, TAG);
         } else {
             stepsArrayList = getIntent().getParcelableArrayListExtra(getString(R.string.steps));
             position = getIntent().getIntExtra("POSITION", 0);
         }
-
+        mContent = StepDetailFragment.newInstance(stepsArrayList, position);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.step_detail_fragment, StepDetailFragment.newInstance(stepsArrayList, position)).commit();
+                .replace(R.id.step_detail_fragment, mContent, TAG).commit();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Step ");
@@ -69,6 +70,14 @@ public class StepsDetail extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STEP_LIST, stepsArrayList);
         outState.putInt(POSITION, StepDetailFragment.position);
+        getSupportFragmentManager().putFragment(outState, TAG, mContent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.d(TAG, "backpressed");
+
     }
 
 

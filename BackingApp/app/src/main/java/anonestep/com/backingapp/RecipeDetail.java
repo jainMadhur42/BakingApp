@@ -47,7 +47,7 @@ public class RecipeDetail extends AppCompatActivity {
     private static final String TAG = RecipeDetail.class.getSimpleName();
     Recipe recipe;
     Fragment mContent;
-
+    public boolean isRestoredState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class RecipeDetail extends AppCompatActivity {
         if (savedInstanceState != null) {
             recipe = savedInstanceState.getParcelable(getString(R.string.recipe));
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, TAG);
+            isRestoredState = true;
         } else {
             Bundle bundle = getIntent().getExtras();
             recipe = bundle.getParcelable(getString(R.string.recipe));
@@ -69,18 +70,22 @@ public class RecipeDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recipe.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (getResources().getBoolean(R.bool.tablet) == false) {
-            mContent = RecipeDetailFragment.newInstance(recipe);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.recipe_detail_container, mContent, TAG)
-                    .commit();
-        } else {
-            mContent = RecipeDetailFragmentTablet.newInstance(recipe);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.recipe_detail_container, mContent, TAG)
-                    .commit();
+
+
+        if (isRestoredState == false) {
+            if (getResources().getBoolean(R.bool.tablet) == false) {
+                mContent = RecipeDetailFragment.newInstance(recipe);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.recipe_detail_container, mContent, TAG)
+                        .commit();
+            } else {
+                mContent = RecipeDetailFragmentTablet.newInstance(recipe);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.recipe_detail_container, mContent, TAG)
+                        .commit();
+            }
         }
     }
 
