@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
     static ArrayList<Ingredients> ingredientsList;
     static ArrayList<Steps> stepList;
     private static final String RECIPE = "RECIPE";
+    private static final String TAG = RecipeDetailFragment.class.getSimpleName();
 
     public RecipeDetailFragment() {
         // Required empty public constructor
@@ -60,7 +62,8 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             currentIngredientsPosition = savedInstanceState.getInt(CURRENT_INGREDIENT_POSITION);
-            currentStepPosition = savedInstanceState.getInt(CURRENT_INGREDIENT_POSITION);
+            currentStepPosition = savedInstanceState.getInt(CURRENT_STEP_POSITION);
+            Log.d(TAG, currentIngredientsPosition + " " + currentStepPosition);
         }
     }
 
@@ -71,6 +74,9 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
             Recipe recipe = getArguments().getParcelable(RECIPE);
             ingredientsList = (ArrayList<Ingredients>) recipe.getIngredients();
             stepList = (ArrayList<Steps>) recipe.getSteps();
+            currentIngredientsPosition = getArguments().getInt(CURRENT_INGREDIENT_POSITION);
+            currentStepPosition = getArguments().getInt(CURRENT_STEP_POSITION);
+
         }
     }
 
@@ -85,7 +91,11 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
         stepsRecyclerView.setLayoutManager(stepsLayoutManager);
         stepsRecyclerView.setAdapter(stepsAdapter);
         stepsRecyclerView.smoothScrollToPosition(currentStepPosition);
-
+        if (savedInstanceState != null){
+            currentIngredientsPosition = savedInstanceState.getInt(CURRENT_INGREDIENT_POSITION);
+            currentStepPosition = savedInstanceState.getInt(CURRENT_STEP_POSITION);
+            Log.d(TAG, currentIngredientsPosition + " " + currentStepPosition + " CREATE_VIEW");
+        }
         IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(ingredientsList);
         ingredientsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         ingredientsRecyclerView.setLayoutManager(ingredientsLayoutManager);
@@ -107,8 +117,10 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_STEP_POSITION, stepsLayoutManager.findFirstVisibleItemPosition());
-        outState.putInt(CURRENT_INGREDIENT_POSITION, ingredientsLayoutManager.findFirstVisibleItemPosition());
+        outState.putInt(CURRENT_STEP_POSITION, stepsLayoutManager.findLastVisibleItemPosition());
+        outState.putInt(CURRENT_INGREDIENT_POSITION, ingredientsLayoutManager.findLastVisibleItemPosition());
+        Log.d(TAG, currentIngredientsPosition + " " + currentStepPosition + " ON_SAVE");
+
     }
 
 

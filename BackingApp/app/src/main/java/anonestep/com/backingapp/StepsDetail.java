@@ -41,6 +41,7 @@ public class StepsDetail extends AppCompatActivity {
     private static String POSITION = "POSITION";
     private static final String TAG = StepDetailFragment.class.getSimpleName();
     Fragment mContent;
+    public boolean isRestoredState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +52,17 @@ public class StepsDetail extends AppCompatActivity {
             stepsArrayList = savedInstanceState.getParcelableArrayList(STEP_LIST);
             position = savedInstanceState.getInt(POSITION, 0);
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, TAG);
+            isRestoredState=true;
         } else {
             stepsArrayList = getIntent().getParcelableArrayListExtra(getString(R.string.steps));
             position = getIntent().getIntExtra("POSITION", 0);
         }
-        mContent = StepDetailFragment.newInstance(stepsArrayList, position);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.step_detail_fragment, mContent, TAG).commit();
-
+        if(isRestoredState==false) {
+            mContent = StepDetailFragment.newInstance(stepsArrayList, position);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.step_detail_fragment, mContent, TAG).commit();
+        }
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Step ");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

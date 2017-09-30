@@ -79,7 +79,7 @@ public class StepDetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             current_position = savedInstanceState.getLong(CURRENT_POSITION);
-            Log.d(TAG, current_position + "onActivity");
+            position= savedInstanceState.getInt(POSITION);
         }
     }
 
@@ -89,6 +89,7 @@ public class StepDetailFragment extends Fragment {
         if (getArguments() != null) {
             stepsArrayList = getArguments().getParcelableArrayList(STEP_LIST);
             position = getArguments().getInt(POSITION);
+            Log.d(TAG, position + "onCreate");
         }
     }
 
@@ -98,7 +99,7 @@ public class StepDetailFragment extends Fragment {
 
         if (savedInstanceState != null) {
             current_position = savedInstanceState.getLong(CURRENT_POSITION);
-            Log.d(TAG, current_position + "oNCreateView");
+            position = savedInstanceState.getInt(POSITION);
         }
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
@@ -142,7 +143,7 @@ public class StepDetailFragment extends Fragment {
             exoPlayer.setPlayWhenReady(true);
             Uri uri = Uri.parse(url);
             MediaSource mediaSource = buildMediaSource(uri);
-            Log.d(TAG, "initializePlayer"+ current_position  );
+            Log.d(TAG, "initializePlayer" + current_position);
             exoPlayer.seekTo(current_position);
             exoPlayer.prepare(mediaSource);
         } else {
@@ -177,7 +178,6 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
     }
 
     @Override
@@ -198,7 +198,6 @@ public class StepDetailFragment extends Fragment {
         super.onResume();
         if (exoPlayer != null) {
             current_position = exoPlayer.getCurrentPosition();
-            Log.d(TAG, current_position + " OnResume");
         }
         //initializePlayer(stepsArrayList.get(position));
     }
@@ -206,7 +205,7 @@ public class StepDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putLong(CURRENT_POSITION, current_position);
-        Log.d(TAG, current_position + "ON_SAVED_STATE");
+        outState.putInt(POSITION,position);
     }
 
 }

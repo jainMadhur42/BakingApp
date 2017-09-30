@@ -47,28 +47,36 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
     TextView mNoInternetText;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
+    @BindView(R.id.recipe_list)
     RecyclerView recipeRecycler;
     ArrayList<Recipe> recipeArrayList;
     RecipeAdapter recipeAdapter;
-
+    public boolean isRestoredState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "Create");
         ButterKnife.bind(this);
-
-        recipeAdapter = new RecipeAdapter(getBaseContext(), recipeArrayList, this);
-
         int grid_count = getResources().getInteger(R.integer.grid_column_count);
 
-        recipeRecycler = (RecyclerView) findViewById(R.id.recipe_list);
+        recipeAdapter = new RecipeAdapter(getBaseContext(), recipeArrayList, this);
         layoutManager = new GridLayoutManager(getBaseContext(), grid_count);
         recipeRecycler.setLayoutManager(layoutManager);
         recipeRecycler.setAdapter(recipeAdapter);
 
-        if (isOnline()) {
+        if (savedInstanceState != null) {
+            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
+            recipeArrayList = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
+            recipeAdapter.swapRecipeList(recipeArrayList);
+            Log.d(TAG, currentScrollPosition + " MAIN");
+            recipeRecycler.smoothScrollToPosition(currentScrollPosition);
+            isRestoredState = true;
+            mNoInternetText.setVisibility(View.INVISIBLE);
+        }
+
+
+        if (isOnline() && isRestoredState == false) {
             final RequestQueue requestQueue = Volley.newRequestQueue(getBaseContext());
             mProgressBar.setVisibility(View.VISIBLE);
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
@@ -79,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
                     recipeArrayList = new Gson().fromJson(response.toString(), listType);
                     mProgressBar.setVisibility(View.INVISIBLE);
                     recipeAdapter.swapRecipeList(recipeArrayList);
-                    recipeRecycler.smoothScrollToPosition(currentScrollPosition);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -97,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_SCROLL_POSITION, layoutManager.findFirstVisibleItemPosition());
+        outState.putInt(CURRENT_SCROLL_POSITION, layoutManager.findLastCompletelyVisibleItemPosition());
+        Log.d(TAG, currentScrollPosition + " SAVE");
         outState.putParcelableArrayList(RECIPE_LIST, recipeArrayList);
     }
 

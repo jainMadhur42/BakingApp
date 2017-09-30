@@ -71,7 +71,6 @@ public class RecipeDetail extends AppCompatActivity {
         getSupportActionBar().setTitle(recipe.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         if (isRestoredState == false) {
             if (getResources().getBoolean(R.bool.tablet) == false) {
                 mContent = RecipeDetailFragment.newInstance(recipe);
@@ -79,13 +78,13 @@ public class RecipeDetail extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.recipe_detail_container, mContent, TAG)
                         .commit();
-            } else {
+            } /*else {
                 mContent = RecipeDetailFragmentTablet.newInstance(recipe);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.recipe_detail_container, mContent, TAG)
                         .commit();
-            }
+            }*/
         }
     }
 
