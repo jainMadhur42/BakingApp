@@ -80,7 +80,6 @@ public class StepsDetail extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Log.d(TAG, "backpressed");
-
     }
 
 

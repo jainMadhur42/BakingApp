@@ -78,13 +78,13 @@ public class RecipeDetail extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.recipe_detail_container, mContent, TAG)
                         .commit();
-            } /*else {
+            } else {
                 mContent = RecipeDetailFragmentTablet.newInstance(recipe);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.recipe_detail_container, mContent, TAG)
                         .commit();
-            }*/
+            }
         }
     }
 

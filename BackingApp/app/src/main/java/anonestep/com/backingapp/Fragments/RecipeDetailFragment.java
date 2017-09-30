@@ -120,7 +120,6 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
         outState.putInt(CURRENT_STEP_POSITION, stepsLayoutManager.findLastVisibleItemPosition());
         outState.putInt(CURRENT_INGREDIENT_POSITION, ingredientsLayoutManager.findLastVisibleItemPosition());
         Log.d(TAG, currentIngredientsPosition + " " + currentStepPosition + " ON_SAVE");
-
     }
 
 

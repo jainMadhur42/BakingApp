@@ -41,6 +41,7 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
     private static final String CURRENT_VIDEO_POSITION = "CURRENT_VIDEO_POSITION";
     private static final String VIDEO_VISIBLE = "VIDEO_VISIBLE";
     private static int currentStepPosition = 0;
+    Fragment stepDetailFragment;
     private static int position;
     private static boolean isVideoVisible = false;
     private static final String TAG = RecipeDetailFragmentTablet.class.getSimpleName();
@@ -68,7 +69,7 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
             currentStepPosition = savedInstanceState.getInt(CURRENT_STEP_POSITION);
             position = savedInstanceState.getInt(CURRENT_VIDEO_POSITION);
             isVideoVisible = savedInstanceState.getBoolean(VIDEO_VISIBLE);
-            if (isVideoVisible == true)
+            /*if (isVideoVisible == true)
                 getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.step_detail_fragment, StepDetailFragment.newInstance(stepList, position))
@@ -77,8 +78,8 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
                 getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.step_detail_fragment, IngredientFragment.newInstance(recipe))
-                        .commit();
-
+                        .commit();*/
+            stepDetailFragment = getFragmentManager().getFragment(savedInstanceState, TAG);
         }
     }
 
@@ -124,8 +125,8 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
         this.position = position;
         isVideoVisible = true;
         stepsRecyclerView.smoothScrollToPosition(position);
-        StepDetailFragment stepDetailFragment = StepDetailFragment.newInstance(stepList, position);
-        stepDetailFragment.setNavigationBarClickListener(this);
+        stepDetailFragment = StepDetailFragment.newInstance(stepList, position);
+        //stepDetailFragment.setNavigationBarClickListener(this);
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.step_detail_fragment, stepDetailFragment)
@@ -138,6 +139,7 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
         outState.putInt(CURRENT_STEP_POSITION, stepsLayoutManager.findFirstVisibleItemPosition());
         outState.putInt(CURRENT_VIDEO_POSITION, position);
         outState.putBoolean(VIDEO_VISIBLE, isVideoVisible);
+        getFragmentManager().putFragment(outState, TAG, stepDetailFragment);
     }
 
 
