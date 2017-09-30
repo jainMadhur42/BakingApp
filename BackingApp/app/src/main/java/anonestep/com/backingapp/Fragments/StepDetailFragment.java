@@ -103,7 +103,7 @@ public class StepDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
         ButterKnife.bind(this, view);
-        initializePlayer(stepsArrayList.get(position), current_position);
+        initializePlayer(stepsArrayList.get(position));
         return view;
     }
 
@@ -117,7 +117,7 @@ public class StepDetailFragment extends Fragment {
             mNavigationBarClickListener.setClickedVideoPosition(position);
         releasePlayer();
         current_position = 0;
-        initializePlayer(stepsArrayList.get(position), current_position);
+        initializePlayer(stepsArrayList.get(position));
     }
 
     @OnClick(R.id.next)
@@ -130,13 +130,11 @@ public class StepDetailFragment extends Fragment {
             mNavigationBarClickListener.setClickedVideoPosition(position);
         current_position = 0;
         releasePlayer();
-        initializePlayer(stepsArrayList.get(position), current_position);
+        initializePlayer(stepsArrayList.get(position));
     }
 
-    private void initializePlayer(Steps steps, long current_position) {
+    private void initializePlayer(Steps steps) {
         url = steps.getVideoURL();
-        
-        Log.d(TAG, "initializePlayer" + current_position);
         if (url != null) {
             mStepDescription.setText(steps.getDescription());
             exoPlayer = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()), new DefaultTrackSelector(), new DefaultLoadControl());
@@ -144,6 +142,7 @@ public class StepDetailFragment extends Fragment {
             exoPlayer.setPlayWhenReady(true);
             Uri uri = Uri.parse(url);
             MediaSource mediaSource = buildMediaSource(uri);
+            Log.d(TAG, "initializePlayer"+ current_position  );
             exoPlayer.seekTo(current_position);
             exoPlayer.prepare(mediaSource);
         } else {
