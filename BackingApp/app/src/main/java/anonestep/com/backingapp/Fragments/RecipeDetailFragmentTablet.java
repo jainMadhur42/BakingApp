@@ -139,6 +139,7 @@ public class RecipeDetailFragmentTablet extends Fragment implements StepsClickLi
         outState.putInt(CURRENT_STEP_POSITION, stepsLayoutManager.findFirstVisibleItemPosition());
         outState.putInt(CURRENT_VIDEO_POSITION, position);
         outState.putBoolean(VIDEO_VISIBLE, isVideoVisible);
+        if(stepDetailFragment!=null)
         getFragmentManager().putFragment(outState, TAG, stepDetailFragment);
     }
 

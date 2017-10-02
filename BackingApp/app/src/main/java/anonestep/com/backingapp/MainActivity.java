@@ -59,53 +59,46 @@ public class MainActivity extends AppCompatActivity implements RecipeClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         int grid_count = getResources().getInteger(R.integer.grid_column_count);
+        if (savedInstanceState != null) {
+            recipeArrayList = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
+            isRestoredState = true;
+            mNoInternetText.setVisibility(View.INVISIBLE);
+        }
 
         recipeAdapter = new RecipeAdapter(getBaseContext(), recipeArrayList, this);
         layoutManager = new GridLayoutManager(getBaseContext(), grid_count);
         recipeRecycler.setLayoutManager(layoutManager);
         recipeRecycler.setAdapter(recipeAdapter);
-
-        if (savedInstanceState != null) {
-            currentScrollPosition = savedInstanceState.getInt(CURRENT_SCROLL_POSITION);
-            recipeArrayList = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
-            recipeAdapter.swapRecipeList(recipeArrayList);
-            Log.d(TAG, currentScrollPosition + " MAIN");
-            recipeRecycler.smoothScrollToPosition(currentScrollPosition);
-            isRestoredState = true;
-            mNoInternetText.setVisibility(View.INVISIBLE);
+        if (isRestoredState == false) {
+            if (isOnline()) {
+                final RequestQueue requestQueue = Volley.newRequestQueue(getBaseContext());
+                mProgressBar.setVisibility(View.VISIBLE);
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Type listType = new TypeToken<List<Recipe>>() {
+                        }.getType();
+                        recipeArrayList = new Gson().fromJson(response.toString(), listType);
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        recipeAdapter.swapRecipeList(recipeArrayList);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, error.toString());
+                    }
+                });
+                requestQueue.add(jsonArrayRequest);
+            } else {
+                mNoInternetText.setVisibility(View.VISIBLE);
+            }
         }
-
-
-        if (isOnline() && isRestoredState == false) {
-            final RequestQueue requestQueue = Volley.newRequestQueue(getBaseContext());
-            mProgressBar.setVisibility(View.VISIBLE);
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    Type listType = new TypeToken<List<Recipe>>() {
-                    }.getType();
-                    recipeArrayList = new Gson().fromJson(response.toString(), listType);
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    recipeAdapter.swapRecipeList(recipeArrayList);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, error.toString());
-                }
-            });
-            requestQueue.add(jsonArrayRequest);
-        } else {
-            mNoInternetText.setVisibility(View.VISIBLE);
-        }
-
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_SCROLL_POSITION, layoutManager.findLastCompletelyVisibleItemPosition());
-        Log.d(TAG, currentScrollPosition + " SAVE");
         outState.putParcelableArrayList(RECIPE_LIST, recipeArrayList);
     }
 

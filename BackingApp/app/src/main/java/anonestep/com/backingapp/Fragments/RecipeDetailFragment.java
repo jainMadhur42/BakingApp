@@ -90,7 +90,6 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
         stepsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         stepsRecyclerView.setLayoutManager(stepsLayoutManager);
         stepsRecyclerView.setAdapter(stepsAdapter);
-        stepsRecyclerView.smoothScrollToPosition(currentStepPosition);
         if (savedInstanceState != null){
             currentIngredientsPosition = savedInstanceState.getInt(CURRENT_INGREDIENT_POSITION);
             currentStepPosition = savedInstanceState.getInt(CURRENT_STEP_POSITION);
@@ -101,6 +100,7 @@ public class RecipeDetailFragment extends Fragment implements StepsClickListener
         ingredientsRecyclerView.setLayoutManager(ingredientsLayoutManager);
         ingredientsRecyclerView.setAdapter(ingredientsAdapter);
         ingredientsRecyclerView.smoothScrollToPosition(currentIngredientsPosition);
+        stepsRecyclerView.smoothScrollToPosition(currentStepPosition);
         return view;
     }
 
