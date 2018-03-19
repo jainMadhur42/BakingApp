@@ -47,11 +47,14 @@ public class StepDetailFragment extends Fragment {
     Button next;
     private ArrayList<Steps> stepsArrayList;
     public static int position;
+
     SimpleExoPlayer exoPlayer;
+    private static final String IS_VIDEO_PLAY="IS_VIDEO_PLAY";
     private static final String STEP_LIST = "STEP_LIST";
     private static final String POSITION = "POSITION";
     private static final String CURRENT_POSITION = "CURRENT_POSITION";
     public long current_position;
+    public boolean isVideoPlaying=true;
     String url;
     private static final String TAG = StepDetailFragment.class.getSimpleName();
     private NavigationBarClickListener mNavigationBarClickListener;
@@ -80,6 +83,7 @@ public class StepDetailFragment extends Fragment {
         if (savedInstanceState != null) {
             current_position = savedInstanceState.getLong(CURRENT_POSITION);
             position= savedInstanceState.getInt(POSITION);
+            isVideoPlaying= savedInstanceState.getBoolean(IS_VIDEO_PLAY);
         }
     }
 
@@ -100,6 +104,7 @@ public class StepDetailFragment extends Fragment {
         if (savedInstanceState != null) {
             current_position = savedInstanceState.getLong(CURRENT_POSITION);
             position = savedInstanceState.getInt(POSITION);
+            isVideoPlaying= savedInstanceState.getBoolean(IS_VIDEO_PLAY);
         }
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_detail, container, false);
@@ -146,6 +151,7 @@ public class StepDetailFragment extends Fragment {
             Log.d(TAG, "initializePlayer" + current_position);
             exoPlayer.seekTo(current_position);
             exoPlayer.prepare(mediaSource);
+            exoPlayer.setPlayWhenReady(isVideoPlaying);
         } else {
             Toast.makeText(getContext(), "No Video Found", Toast.LENGTH_SHORT).show();
         }
@@ -166,11 +172,20 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG,"START");
+        initializePlayer(stepsArrayList.get(position));
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if (exoPlayer != null) {
             current_position = exoPlayer.getCurrentPosition();
-            Log.d(TAG, current_position + " OnPause");
+            isVideoPlaying = exoPlayer.getPlayWhenReady();
+            exoPlayer.getPlaybackState();
+            Log.d(TAG,isVideoPlaying+ " IS VIDEO PLAYING");
         }
         releasePlayer();
     }
@@ -206,6 +221,7 @@ public class StepDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putLong(CURRENT_POSITION, current_position);
         outState.putInt(POSITION,position);
+        outState.putBoolean(IS_VIDEO_PLAY, isVideoPlaying);
     }
 
 }
